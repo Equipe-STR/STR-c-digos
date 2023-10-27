@@ -12,13 +12,16 @@
             padding: 0 px;
             background-color: rgb(241, 241, 241);
         }
+        #sobre{
+            display: none;
+        }
         nav{
             display: flex;
             margin: 0px;
             justify-content: space-between;
             background-color: #d5f77d;
-            padding-left: 2vw;
-            padding-right: 2vw;
+            padding-left: 5vw;
+            padding-right: 5vw;
             height: 10vh;
         }
         .list{
@@ -109,10 +112,10 @@
         <h1>My House</h1>
         <ul class="list">
             <li class="linksAbas">
-                <button class="links">HOME</button>        
+                <button class="links" id="botao-home">HOME</button>        
             </li>
             <li class="linksAbas">
-                <button class="links">SOBRE</button>
+                <button class="links" id="botao-sobre">SOBRE</button>
             </li>
         </ul>
     </nav>
@@ -239,6 +242,20 @@
             </div>
         </div>
     </div>
-    <div id="sobre"></div>
+    <div id="sobre">
+        teste
+    </div>
 </body>
+<script>
+    function clickHome() {
+        document.getElementById("home").style.display = "block";
+        document.getElementById("sobre").style.display = "none";
+    }
+    function clickSobre() {
+        document.getElementById("home").style.display = "none";
+        document.getElementById("sobre").style.display = "block";
+    }
+    document.getElementById("botao-home").addEventListener("click", clickHome);
+    document.getElementById("botao-sobre").addEventListener("click", clickSobre);
+</script>
 </html>
