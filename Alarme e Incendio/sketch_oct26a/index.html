@@ -3,9 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        body{
+            margin: 0px;
+            padding: 0 px;
+            background-color: rgb(241, 241, 241);
+        }
+        nav{
+            display: flex;
+            margin: 0px;
+            justify-content: space-between;
+            background-color: #d5f77d;
+            padding-left: 2vw;
+            padding-right: 2vw;
+            height: 10vh;
+        }
+        .list{
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        .linksAbas{
+            text-decoration: none;
+            font-size: 20px;
+            margin-left: 2vw;
+            margin-right: 2vw;
+        }
+        .links{
+            background-color: transparent; 
+            color: black;
+            font-size: 1.2rem;
+            border-width: 0px;
+            font-weight: bold;
+        }
+        .links:hover, .links::selection{
+            text-decoration: underline;
+            color: white;
+            cursor: pointer;
+        }
+        #cartoes{
+            padding-right: 1%;
+            padding-left: 1%;
+            padding-top: 3%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cartao{
+            width: 100%;
+            height: 30vw;
+            margin-left: 3%;
+            margin-right: 3%;
+            background-color: white;
+            border-radius: 30px;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #sirene{
+            width: 50px;
+            height: 50px;
+        }
+        .alarme{
+            display: flex;
+            align-items: center;
+        }
+        .alarme > *{
+            display: inline;
+            margin-right: 0.5em;
+            margin-left: 0.5em;
+        }
+    </style>
     <title>Monitoramento</title>
 </head>
 <body>
-    <h1>TESTE</h1>
+    <nav>
+        <h1>My House</h1>
+        <ul class="list">
+            <li class="linksAbas">
+                <button class="links">HOME</button>        
+            </li>
+            <li class="linksAbas">
+                <button class="links">SOBRE</button>
+            </li>
+        </ul>
+    </nav>
+    <div id="home">
+        <div id="cartoes">
+            <div class="cartao">
+                <div class="alarme">
+                    <h2>ALARME</h2>
+                    <svg id="sirene" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048.000000 2048.000000">
+                        <g transform="translate(0.000000,2048.000000) scale(0.100000,-0.100000)"
+                        fill="#ff0000" stroke="none">
+                        <path d="M10443 20114 c-58 -21 -126 -85 -157 -146 l-26 -52 0 -1430 c0 -1417
+                        1 -1431 21 -1476 25 -55 80 -114 134 -143 32 -17 57 -22 125 -22 68 0 93 5
+                        125 22 51 27 107 86 134 140 l21 42 0 1433 0 1432 -25 52 c-63 129 -220 194
+                        -352 148z"/>
+                        <path d="M15475 18353 c-22 -9 -49 -22 -60 -30 -11 -7 -469 -462 -1018 -1010
+                        -916 -916 -999 -1002 -1017 -1050 -70 -187 67 -386 264 -385 127 1 63 -57
+                        1168 1050 1114 1115 1038 1031 1038 1166 -1 104 -60 197 -157 246 -62 31 -161
+                        37 -218 13z"/>
+                        <path d="M5017 18129 c-136 -33 -222 -143 -221 -284 0 -55 6 -80 26 -120 20
+                        -38 270 -293 1025 -1046 1107 -1105 1028 -1035 1164 -1033 192 2 321 193 256
+                        379 -16 45 -109 142 -1020 1056 -784 787 -1012 1011 -1047 1026 -55 25 -133
+                        35 -183 22z"/>
+                        <path d="M9130 14999 c-1071 -78 -2040 -588 -2607 -1374 -208 -288 -376 -649
+                        -447 -965 -13 -54 -396 -2143 -442 -2410 -8 -47 -30 -168 -49 -270 -19 -102
+                        -136 -743 -260 -1425 -272 -1491 -262 -1435 -285 -1565 -31 -173 -370 -2033
+                        -376 -2064 l-6 -29 5878 8 c3234 4 5880 9 5882 10 2 2 -17 99 -42 217 -25 117
+                        -86 409 -136 648 -50 239 -99 476 -110 525 -10 50 -39 187 -64 305 -25 118
+                        -61 289 -80 380 -20 91 -58 273 -85 405 -58 283 -265 1270 -320 1535 -22 102
+                        -65 307 -96 455 -71 339 -120 574 -145 690 -11 50 -83 394 -160 765 -291 1393
+                        -321 1536 -330 1575 -5 22 -21 96 -36 165 -72 342 -198 644 -392 940 -480 732
+                        -1306 1253 -2257 1424 -339 61 -297 60 -1665 62 -690 1 -1307 -2 -1370 -7z"/>
+                        <path d="M2543 14040 c-86 -20 -167 -96 -197 -183 -36 -106 -11 -213 67 -291
+                        96 -94 -45 -87 1577 -84 l1425 3 51 27 c123 65 182 209 139 339 -22 65 -87
+                        138 -153 171 l-47 23 -1415 2 c-778 0 -1429 -2 -1447 -7z"/>
+                        <path d="M15580 14030 c-77 -26 -152 -106 -175 -185 -40 -137 19 -270 147
+                        -334 l61 -31 1412 0 c1587 0 1473 -5 1563 76 162 145 99 416 -110 479 -45 13
+                        -225 15 -1447 15 -1342 -1 -1398 -1 -1451 -20z"/>
+                        <path d="M4315 4694 c-287 -51 -546 -220 -699 -456 -72 -111 -110 -193 -144
+                        -316 -24 -88 -27 -112 -26 -267 0 -144 3 -183 23 -255 94 -352 353 -630 691
+                        -742 169 -57 -282 -53 6385 -53 5878 0 6164 1 6243 18 404 87 711 373 819 763
+                        25 90 28 114 28 269 0 155 -3 179 -28 270 -101 368 -386 649 -762 753 l-100
+                        27 -6175 2 c-5319 1 -6186 -1 -6255 -13z"/>
+                        <path d="M3220 2279 c-255 -28 -486 -206 -576 -446 -30 -79 -25 -94 9 -26 54
+                        105 207 238 367 318 65 33 181 77 187 72 2 -2 -25 -14 -59 -27 -194 -70 -375
+                        -201 -465 -336 -134 -201 -104 -421 82 -610 102 -103 227 -182 378 -239 26
+                        -10 46 -20 43 -22 -8 -8 -164 60 -240 105 -92 55 -199 143 -241 198 -16 21
+                        -45 66 -63 99 -35 64 -34 46 3 -48 36 -92 85 -165 157 -238 79 -79 171 -137
+                        283 -176 l80 -28 4340 0 c4813 0 10036 9 10105 18 25 3 14 0 -25 -8 l-70 -13
+                        163 -1 c202 -1 282 14 412 76 79 38 108 59 180 132 73 72 94 101 133 181 50
+                        103 74 174 33 100 -106 -195 -359 -360 -675 -440 -46 -11 -88 -19 -93 -18 -6
+                        2 25 12 68 22 44 10 126 36 183 57 314 117 516 312 550 530 49 309 -252 602
+                        -739 720 -63 15 -104 28 -92 28 35 1 174 -35 272 -71 117 -43 256 -117 332
+                        -175 73 -57 170 -169 195 -224 29 -67 26 -35 -5 44 -51 130 -142 245 -262 326
+                        -69 48 -99 63 -180 92 l-65 24 -7285 2 c-4007 1 -7303 3 -7325 5 -22 2 -65 0
+                        -95 -3z"/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="situacao">Sem detecção</div>
+            </div>
+            <div class="cartao">teste</div>
+        </div>
+    </div>
+    <div id="sobre"></div>
 </body>
 </html>
