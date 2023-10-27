@@ -67,8 +67,9 @@
             width: 50px;
             height: 50px;
         }
-        .alarme{
+        .cartao>*{
             display: flex;
+            justify-content: center;
             align-items: center;
         }
         .alarme > *{
@@ -93,7 +94,7 @@
     </nav>
     <div id="home">
         <div id="cartoes">
-            <div class="cartao">
+            <div class="cartao" id="alarme">
                 <div class="alarme">
                     <h2>ALARME</h2>
                     <svg id="sirene" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048.000000 2048.000000">
@@ -149,7 +150,7 @@
                 </div>
                 <div class="situacao">Sem detecção</div>
             </div>
-            <div class="cartao">teste</div>
+            <div class="cartao" id="incendio">teste</div>
         </div>
     </div>
     <div id="sobre"></div>
