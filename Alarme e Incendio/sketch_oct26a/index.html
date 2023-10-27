@@ -249,11 +249,13 @@
     </div>
 </body>
 <script>
-    function clickHome() {
+    function clickHome(e) {
+        e.preventDefault();
         document.getElementById("home").style.display = "block";
         document.getElementById("sobre").style.display = "none";
     }
-    function clickSobre() {
+    function clickSobre(e) {
+        e.preventDefault();
         document.getElementById("home").style.display = "none";
         document.getElementById("sobre").style.display = "block";
     }
