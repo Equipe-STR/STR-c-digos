@@ -53,7 +53,7 @@
         }
         .cartao{
             width: 100%;
-            height: 30vw;
+            height: 20em;
             margin-left: 3%;
             margin-right: 3%;
             background-color: white;
@@ -89,6 +89,17 @@
         }
         .situacao{
             font-size: 2em;
+        }
+        @media screen and (max-width: 522px) {
+            #cartoes{
+                flex-direction: column;
+                align-items: center;
+            }
+            .cartao{
+                margin-top: 10px;
+                margin-bottom: 10px;
+                width: 80%;
+            }
         }
     </style>
     <title>Monitoramento</title>
