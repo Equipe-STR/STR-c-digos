@@ -19,7 +19,7 @@
             background-color: #d5f77d;
             padding-left: 2vw;
             padding-right: 2vw;
-            height: 10vh;
+            height: 25vh;
         }
         .list{
             display: flex;
@@ -45,9 +45,7 @@
             cursor: pointer;
         }
         #cartoes{
-            padding-right: 1%;
-            padding-left: 1%;
-            padding-top: 3%;
+            padding: 40px 30px 15px 20px;
             display: flex;
             justify-content: space-between;
         }
@@ -89,6 +87,27 @@
         }
         .situacao{
             font-size: 2em;
+        }
+        table {
+            width: 90vw;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            padding: 15px;
+            text-align: center;
+            width: 90vw;
+        }
+        .cx-tabela {
+            padding: 0 0 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0;
         }
         @media screen and (max-width: 522px) {
             #cartoes{
@@ -240,5 +259,25 @@
         </div>
     </div>
     <div id="sobre"></div>
+    <div class="cx-tabela">
+    <table>
+     <tr>
+    <th colspan="3" style="background-color: #d5f77d;">Histórico</th>
+  </tr>
+      <tr>
+        <th>Hora</th>
+        <th>Evento</th>
+        <th>Data</th>
+      </tr>
+      <!-- Repita o seguinte bloco para cada linha -->
+      <!-- Início do bloco -->
+      <tr>
+        <td>23:59</td>
+        <td>Lobisomem detectado</td>
+        <td>26/10/2023</td>
+      </tr>
+      <!-- Fim do bloco -->
+    </table>
+  </div>
 </body>
 </html>
