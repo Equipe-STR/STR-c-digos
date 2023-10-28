@@ -12,7 +12,9 @@ const char* password = "zenilda11";
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-JSONVar readings; 
+JSONVar readings;
+int ativacaoAlarme = 1;
+int ativacaoIncendio = 1;
 
 // variáveis de tempo
 unsigned long lastTime = 0;
@@ -106,7 +108,7 @@ char index_html[] PROGMEM = R"rawliteral(
             margin-left: 0.5em;
         }
         .on-off-button{
-            background-color: #FD002E; 
+            background-color: #000dfdf2; 
             color: white;
             font-size: 1.2rem;
             border-width: 0px;
@@ -115,6 +117,7 @@ char index_html[] PROGMEM = R"rawliteral(
         }
         .situacao{
             font-size: 2em;
+            font-weight: bold;
         }
         table {
             width: 90vw;
@@ -219,9 +222,9 @@ char index_html[] PROGMEM = R"rawliteral(
                         </g>
                     </svg>
                 </div>
-                <div class="situacao">Sem detecção</div>
+                <div class="situacao" id="alarme-texto">Sem detecção</div>
                 <div>
-                    <button id="alarme-button" class="on-off-button">DESLIGADO</button>
+                    <button id="alarme-button" class="on-off-button">LIGADO</button>
                 </div>
                 
             </div>
@@ -248,9 +251,9 @@ char index_html[] PROGMEM = R"rawliteral(
                         </g>
                     </svg>
                 </div>
-                <div class="situacao">Sem detecção</div>
+                <div class="situacao" id="incendio-texto">Sem detecção</div>
                 <div>
-                    <button id="incendio-button" class="on-off-button">DESLIGADO</button>
+                    <button id="incendio-button" class="on-off-button">LIGADO</button>
                 </div>
             </div>
         </div>
@@ -365,17 +368,29 @@ char index_html[] PROGMEM = R"rawliteral(
 
     function ativarAlarme(){
         addCard("Alarme iniciado")
+        const elemento = document.getElementById("alarme-texto")
+        elemento.style.color = "#ff0000"
+        elemento.innerHTML = "ALARME ATIVADO"
     }
     
     function ativarIncendio(){
+        const elemento = document.getElementById("incendio-texto")
+        elemento.style.color = "#ff0000"
+        elemento.innerHTML = "INCÊNDIO DETECTADO"
         addCard("Incendio iniciado")
     }
 
     function desativarAlarme(){
+        const elemento = document.getElementById("alarme-texto")
+        elemento.style.color = "#000000"
+        elemento.innerHTML = "Sem detecção"
         addCard("Alarme terminado")
     }
     
     function desativarIncendio(){
+        const elemento = document.getElementById("incendio-texto")
+        elemento.style.color = "#000000"
+        elemento.innerHTML = "Sem detecção"
         addCard("Incendio terminado")
     }
 
@@ -461,6 +476,8 @@ String getSensorReadings(){
   }
   readings["sinalPresenca"] = String(sinalPresenca);
   readings["leituraFogo"] =  String(leituraFogo);
+  readings["ativacaoAlarme"] = String(ativacaoAlarme);
+  readings["ativacaoIncendio"] = String(ativacaoIncendio);
   String jsonString = JSON.stringify(readings);
   return jsonString;
 }
@@ -527,6 +544,11 @@ void setup() {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", index_html);
+  });
+  server.on("/desativaralarme", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Alarme desativado");
+    ativacaoAlarme = false;
+    request->send_P(200, "text/html", "Desativado com sucesso");
   });
 
   server.begin();

@@ -85,7 +85,7 @@
             margin-left: 0.5em;
         }
         .on-off-button{
-            background-color: #FD002E; 
+            background-color: #000dfdf2; 
             color: white;
             font-size: 1.2rem;
             border-width: 0px;
@@ -94,6 +94,7 @@
         }
         .situacao{
             font-size: 2em;
+            font-weight: bold;
         }
         table {
             width: 90vw;
@@ -198,9 +199,9 @@
                         </g>
                     </svg>
                 </div>
-                <div class="situacao">Sem detecção</div>
+                <div class="situacao" id="alarme-texto">Sem detecção</div>
                 <div>
-                    <button id="alarme-button" class="on-off-button">DESLIGADO</button>
+                    <button id="alarme-button" class="on-off-button">LIGADO</button>
                 </div>
                 
             </div>
@@ -227,9 +228,9 @@
                         </g>
                     </svg>
                 </div>
-                <div class="situacao">Sem detecção</div>
+                <div class="situacao" id="incendio-texto">Sem detecção</div>
                 <div>
-                    <button id="incendio-button" class="on-off-button">DESLIGADO</button>
+                    <button id="incendio-button" class="on-off-button">LIGADO</button>
                 </div>
             </div>
         </div>
@@ -267,7 +268,7 @@
      })
     const botaoAlarme = document.querySelector("#alarme-button");
     botaoAlarme.addEventListener("click", function (e){
-        const botaoAlarme = document.querySelector("#alarme-button");
+        /*const botaoAlarme = document.querySelector("#alarme-button");
         e.preventDefault();
         if(botaoAlarme.innerHTML == "DESLIGADO"){
             botaoAlarme.innerHTML = "LIGADO";
@@ -276,7 +277,7 @@
         else{
             botaoAlarme.innerHTML = "DESLIGADO";
             botaoAlarme.style.backgroundColor = "#FD002E";
-        }
+        }*/
      })
 
     function n(){}
@@ -344,17 +345,29 @@
 
     function ativarAlarme(){
         addCard("Alarme iniciado")
+        const elemento = document.getElementById("alarme-texto")
+        elemento.style.color = "#ff0000"
+        elemento.innerHTML = "ALARME ATIVADO"
     }
     
     function ativarIncendio(){
+        const elemento = document.getElementById("incendio-texto")
+        elemento.style.color = "#ff0000"
+        elemento.innerHTML = "INCÊNDIO DETECTADO"
         addCard("Incendio iniciado")
     }
 
     function desativarAlarme(){
+        const elemento = document.getElementById("alarme-texto")
+        elemento.style.color = "#000000"
+        elemento.innerHTML = "Sem detecção"
         addCard("Alarme terminado")
     }
     
     function desativarIncendio(){
+        const elemento = document.getElementById("incendio-texto")
+        elemento.style.color = "#000000"
+        elemento.innerHTML = "Sem detecção"
         addCard("Incendio terminado")
     }
 
@@ -377,6 +390,10 @@
         if (myObj["leituraFogo"]=="0" && incendio){
             incendio = false
             desativarIncendio()
+        }
+        if (myObg["ativacaoAlarme"]=="1"){
+            botaoAlarme.innerHTML = "LIGADO";
+            botaoAlarme.style.backgroundColor = "#000dfdf2";
         }
     }
 </script>
