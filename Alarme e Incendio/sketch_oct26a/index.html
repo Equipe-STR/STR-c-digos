@@ -265,7 +265,7 @@
             </div>
         </div>
         <div class="cx-tabela">
-            <table>
+            <table id="historico">
                 <tr>
                     <th colspan="3" style="background-color: #d5f77d;">Histórico</th>
                 </tr>
@@ -273,11 +273,6 @@
                     <th>Hora</th>
                     <th>Evento</th>
                     <th>Data</th>
-                </tr>
-                <tr>
-                    <td>23:59</td>
-                    <td>Lobisomem detectado</td>
-                    <td>26/10/2023</td>
                 </tr>
             </table>
         </div>
@@ -326,5 +321,36 @@
     }
     document.getElementById("botao-home").addEventListener("click", clickHome);
     document.getElementById("botao-sobre").addEventListener("click", clickSobre);
+    
+    function addAlarme() {
+        // Seleciona a tabela
+        var table = document.querySelector('#historico');
+        // Insere uma nova linha no final da tabela
+        var newRow = table.insertRow(2);
+        // Insere novas células na linha
+        var hora = newRow.insertCell(0);
+        var evento = newRow.insertCell(1);
+        var data = newRow.insertCell(2);
+        var now = new Date();
+        // Adiciona o conteúdo às células
+        hora.innerHTML = now.toLocaleTimeString();
+        evento.innerHTML = "Alarme";
+        data.innerHTML =  now.toLocaleDateString();
+    }
+    function addIncendio() {
+        // Seleciona a tabela
+        var table = document.querySelector('#historico');
+        // Insere uma nova linha no final da tabela
+        var newRow = table.insertRow(2);
+        // Insere novas células na linha
+        var hora = newRow.insertCell(0);
+        var evento = newRow.insertCell(1);
+        var data = newRow.insertCell(2);
+        var now = new Date();
+        // Adiciona o conteúdo às células
+        hora.innerHTML = now.toLocaleTimeString();
+        evento.innerHTML = "Incendio";
+        data.innerHTML =  now.toLocaleDateString();
+    }
 </script>
 </html>
