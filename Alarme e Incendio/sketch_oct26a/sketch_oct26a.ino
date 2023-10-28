@@ -1,5 +1,7 @@
 #include "WiFi.h"
 #include "ESPAsyncWebServer.h"
+#include <AsyncTCP.h>
+#include <Arduino_JSON.h>
 
 #define PIN_SENSOR 14
 #define PIN_BUZZER 17
@@ -9,6 +11,12 @@ const char* ssid = "wifi_inacio.";
 const char* password = "zenilda11";
 
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+JSONVar readings; 
+
+// variáveis de tempo
+unsigned long lastTime = 0;
+unsigned long timerDelay = 30000;
 
 char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -379,6 +387,28 @@ void acionaBuzzer(){
   }
 }
 
+String getSensorReadings(){
+  int sinal = digitalRead(PIN_SENSOR);
+  bool leituraFogo = digitalRead(PIN_FOGO);
+  if(sinal == HIGH){
+    acionaBuzzer();
+  }
+  else if(leituraFogo==HIGH){
+    acionaBuzzer();
+  }
+  //LOW: Nada detectado
+  else{
+    // Desativa o buzzer
+    noTone(PIN_BUZZER);
+  }
+  readings["temperature"] = String(sinal);
+  readings["humidity"] =  String(leituraFogo);
+  readings["pressure"] = String(bme.readPressure()/100.0F);
+  String jsonString = JSON.stringify(readings);
+  return jsonString;
+}
+
+
 void setup() {
   removeLineInfo(index_html);
   ledcSetup(1, 2, 3);
@@ -405,17 +435,5 @@ void setup() {
 }
 
 void loop() {
-  int sinal = digitalRead(PIN_SENSOR);
-  bool leituraFogo = digitalRead(PIN_FOGO);
-  if(sinal == HIGH){
-    acionaBuzzer();
-  }
-  else if(leituraFogo==HIGH){
-    acionaBuzzer();
-  }
-  //LOW: Nada detectado
-  else{
-    // Desativa o buzzer
-    noTone(PIN_BUZZER);
-  }
+  
 }
