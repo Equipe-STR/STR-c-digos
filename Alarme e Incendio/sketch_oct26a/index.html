@@ -230,4 +230,33 @@
     </div>
     <div id="sobre"></div>
 </body>
+<Script>
+    const botaoIncedio = document.querySelector("#incendio-button");
+    botaoIncedio.addEventListener("click", function (e){
+        const botaoIncedio = document.querySelector("#incendio-button");
+        e.preventDefault();
+        if(botaoIncedio.innerHTML == "DESLIGADO"){
+            botaoIncedio.innerHTML = "LIGADO";
+            botaoIncedio.style.backgroundColor = "#000dfdf2";
+        }
+        else{
+            botaoIncedio.innerHTML = "DESLIGADO";
+            botaoIncedio.style.backgroundColor = "#FD002E";
+        }
+     })
+    const botaoAlarme = document.querySelector("#alarme-button");
+    botaoAlarme.addEventListener("click", function (e){
+        const botaoAlarme = document.querySelector("#alarme-button");
+        e.preventDefault();
+        if(botaoAlarme.innerHTML == "DESLIGADO"){
+            botaoAlarme.innerHTML = "LIGADO";
+            botaoAlarme.style.backgroundColor = "#000dfdf2";
+        }
+        else{
+            botaoAlarme.innerHTML = "DESLIGADO";
+            botaoAlarme.style.backgroundColor = "#FD002E";
+        }
+     })
+</Script>
+
 </html>
