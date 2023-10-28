@@ -314,7 +314,7 @@ char index_html[] PROGMEM = R"rawliteral(
     document.getElementById("botao-home").addEventListener("click", clickHome);
     document.getElementById("botao-sobre").addEventListener("click", clickSobre);
     
-    function addAlarme() {
+    function addCard(nomeEvento) {
         // Seleciona a tabela
         var table = document.querySelector('#historico');
         // Insere uma nova linha no final da tabela
@@ -326,22 +326,7 @@ char index_html[] PROGMEM = R"rawliteral(
         var now = new Date();
         // Adiciona o conteúdo às células
         hora.innerHTML = now.toLocaleTimeString();
-        evento.innerHTML = "Alarme";
-        data.innerHTML =  now.toLocaleDateString();
-    }
-    function addIncendio() {
-        // Seleciona a tabela
-        var table = document.querySelector('#historico');
-        // Insere uma nova linha no final da tabela
-        var newRow = table.insertRow(2);
-        // Insere novas células na linha
-        var hora = newRow.insertCell(0);
-        var evento = newRow.insertCell(1);
-        var data = newRow.insertCell(2);
-        var now = new Date();
-        // Adiciona o conteúdo às células
-        hora.innerHTML = now.toLocaleTimeString();
-        evento.innerHTML = "Incendio";
+        evento.innerHTML = nomeEvento;
         data.innerHTML =  now.toLocaleDateString();
     }
     
@@ -349,7 +334,8 @@ char index_html[] PROGMEM = R"rawliteral(
     var websocket;
     // Init web socket when the page loads
     window.addEventListener('load', onload);
-
+    var alarme = false;
+    var incendio = false;
     function onload(event) {
         initWebSocket();
     }
@@ -377,16 +363,42 @@ char index_html[] PROGMEM = R"rawliteral(
         setTimeout(initWebSocket, 2000);
     }
 
-    // Function that receives the message from the ESP32 with the readings
+    function ativarAlarme(){
+        addCard("Alarme iniciado")
+    }
+    
+    function ativarIncendio(){
+        addCard("Incendio iniciado")
+    }
+
+    function desativarAlarme(){
+        addCard("Alarme terminado")
+    }
+    
+    function desativarIncendio(){
+        addCard("Incendio terminado")
+    }
+
     function onMessage(event) {
         console.log(event.data);
         var myObj = JSON.parse(event.data);
         var keys = Object.keys(myObj);
-
-        /*for (var i = 0; i < keys.length; i++){
-            var key = keys[i];
-            document.getElementById(key).innerHTML = myObj[key];
-        }*/
+        if (myObj["sinalPresenca"]=="1" && !alarme){
+            alarme = true
+            ativarAlarme()
+        }
+        if (myObj["leituraFogo"]=="1"&& !incendio){
+            incendio = true
+            ativarIncendio()
+        }
+        if (myObj["sinalPresenca"]=="0" && alarme){
+            alarme = false
+            desativarAlarme()
+        }
+        if (myObj["leituraFogo"]=="0" && incendio){
+            incendio = false
+            desativarIncendio()
+        }
     }
 </script>
 </html>
