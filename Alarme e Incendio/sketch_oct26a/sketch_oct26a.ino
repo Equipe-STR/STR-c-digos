@@ -278,29 +278,33 @@ char index_html[] PROGMEM = R"rawliteral(
 <Script>
     const botaoIncedio = document.querySelector("#incendio-button");
     botaoIncedio.addEventListener("click", function (e){
-        /*const botaoIncedio = document.querySelector("#incendio-button");
+        const botaoIncedio = document.querySelector("#incendio-button");
         e.preventDefault();
         if(botaoIncedio.innerHTML == "DESLIGADO"){
-            botaoIncedio.innerHTML = "LIGADO";
-            botaoIncedio.style.backgroundColor = "#000dfdf2";
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/ativarincendio", true);
+            xhttp.send();
         }
         else{
-            botaoIncedio.innerHTML = "DESLIGADO";
-            botaoIncedio.style.backgroundColor = "#FD002E";
-        }*/
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/desativarincendio", true);
+            xhttp.send()
+        }
      })
     const botaoAlarme = document.querySelector("#alarme-button");
     botaoAlarme.addEventListener("click", function (e){
-        /*const botaoAlarme = document.querySelector("#alarme-button");
+        const botaoAlarme = document.querySelector("#alarme-button");
         e.preventDefault();
         if(botaoAlarme.innerHTML == "DESLIGADO"){
-            botaoAlarme.innerHTML = "LIGADO";
-            botaoAlarme.style.backgroundColor = "#000dfdf2";
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/ativaralarme", true);
+            xhttp.send()
         }
         else{
-            botaoAlarme.innerHTML = "DESLIGADO";
-            botaoAlarme.style.backgroundColor = "#FD002E";
-        }*/
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/desativaralarme", true);
+            xhttp.send()
+        }
      })
 
     function n(){}
