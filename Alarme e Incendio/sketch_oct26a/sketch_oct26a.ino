@@ -278,7 +278,7 @@ char index_html[] PROGMEM = R"rawliteral(
 <Script>
     const botaoIncedio = document.querySelector("#incendio-button");
     botaoIncedio.addEventListener("click", function (e){
-        const botaoIncedio = document.querySelector("#incendio-button");
+        /*const botaoIncedio = document.querySelector("#incendio-button");
         e.preventDefault();
         if(botaoIncedio.innerHTML == "DESLIGADO"){
             botaoIncedio.innerHTML = "LIGADO";
@@ -287,11 +287,11 @@ char index_html[] PROGMEM = R"rawliteral(
         else{
             botaoIncedio.innerHTML = "DESLIGADO";
             botaoIncedio.style.backgroundColor = "#FD002E";
-        }
+        }*/
      })
     const botaoAlarme = document.querySelector("#alarme-button");
     botaoAlarme.addEventListener("click", function (e){
-        const botaoAlarme = document.querySelector("#alarme-button");
+        /*const botaoAlarme = document.querySelector("#alarme-button");
         e.preventDefault();
         if(botaoAlarme.innerHTML == "DESLIGADO"){
             botaoAlarme.innerHTML = "LIGADO";
@@ -300,7 +300,7 @@ char index_html[] PROGMEM = R"rawliteral(
         else{
             botaoAlarme.innerHTML = "DESLIGADO";
             botaoAlarme.style.backgroundColor = "#FD002E";
-        }
+        }*/
      })
 
     function n(){}
@@ -413,6 +413,26 @@ char index_html[] PROGMEM = R"rawliteral(
         if (myObj["leituraFogo"]=="0" && incendio){
             incendio = false
             desativarIncendio()
+        }
+        if (myObj["ativacaoAlarme"]=="0"){
+            const botaoAlarme = document.querySelector("#alarme-button");
+            botaoAlarme.innerHTML = "DESLIGADO";
+            botaoAlarme.style.backgroundColor = "#FD002E";
+        }
+        if (myObj["ativacaoAlarme"]=="1"){
+            const botaoAlarme = document.querySelector("#alarme-button");
+            botaoAlarme.innerHTML = "LIGADO";
+            botaoAlarme.style.backgroundColor = "#000dfdf2";
+        }
+        if (myObj["ativacaoIncendio"]=="0"){
+            const botaoIncendio = document.querySelector("#incendio-button");
+            botaoIncedio.innerHTML = "DESLIGADO";
+            botaoIncedio.style.backgroundColor = "#FD002E";
+        }
+        if (myObj["ativacaoIncendio"]=="1"){
+            const botaoIncendio = document.querySelector("#incendio-button");
+            botaoIncendio.innerHTML = "LIGADO";
+            botaoIncendio.style.backgroundColor = "#000dfdf2";
         }
     }
 </script>
@@ -550,7 +570,21 @@ void setup() {
     ativacaoAlarme = false;
     request->send_P(200, "text/html", "Desativado com sucesso");
   });
-
+  server.on("/ativaralarme", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Alarme ativado");
+    ativacaoAlarme = true;
+    request->send_P(200, "text/html", "Ativado com sucesso");
+  });
+  server.on("/desativarincendio", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Incendio desativado");
+    ativacaoIncendio = false;
+    request->send_P(200, "text/html", "Desativado com sucesso");
+  });
+  server.on("/ativarincendio", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Incendio ativado");
+    ativacaoIncendio = true;
+    request->send_P(200, "text/html", "Ativado com sucesso");
+  });
   server.begin();
 }
 

@@ -255,7 +255,7 @@
 <Script>
     const botaoIncedio = document.querySelector("#incendio-button");
     botaoIncedio.addEventListener("click", function (e){
-        const botaoIncedio = document.querySelector("#incendio-button");
+        /*const botaoIncedio = document.querySelector("#incendio-button");
         e.preventDefault();
         if(botaoIncedio.innerHTML == "DESLIGADO"){
             botaoIncedio.innerHTML = "LIGADO";
@@ -264,7 +264,7 @@
         else{
             botaoIncedio.innerHTML = "DESLIGADO";
             botaoIncedio.style.backgroundColor = "#FD002E";
-        }
+        }*/
      })
     const botaoAlarme = document.querySelector("#alarme-button");
     botaoAlarme.addEventListener("click", function (e){
@@ -391,9 +391,25 @@
             incendio = false
             desativarIncendio()
         }
-        if (myObg["ativacaoAlarme"]=="1"){
+        if (myObj["ativacaoAlarme"]=="0"){
+            const botaoAlarme = document.querySelector("#alarme-button");
+            botaoAlarme.innerHTML = "DESLIGADO";
+            botaoAlarme.style.backgroundColor = "#FD002E";
+        }
+        if (myObj["ativacaoAlarme"]=="1"){
+            const botaoAlarme = document.querySelector("#alarme-button");
             botaoAlarme.innerHTML = "LIGADO";
             botaoAlarme.style.backgroundColor = "#000dfdf2";
+        }
+        if (myObj["ativacaoIncendio"]=="0"){
+            const botaoIncendio = document.querySelector("#incendio-button");
+            botaoIncedio.innerHTML = "DESLIGADO";
+            botaoIncedio.style.backgroundColor = "#FD002E";
+        }
+        if (myObj["ativacaoIncendio"]=="1"){
+            const botaoIncendio = document.querySelector("#incendio-button");
+            botaoIncendio.innerHTML = "LIGADO";
+            botaoIncendio.style.backgroundColor = "#000dfdf2";
         }
     }
 </script>
