@@ -16,7 +16,7 @@ JSONVar readings;
 
 // variáveis de tempo
 unsigned long lastTime = 0;
-unsigned long timerDelay = 30000;
+unsigned long timerDelay = 500;
 
 char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -344,6 +344,50 @@ char index_html[] PROGMEM = R"rawliteral(
         evento.innerHTML = "Incendio";
         data.innerHTML =  now.toLocaleDateString();
     }
+    
+    var gateway = `ws://${window.location.hostname}/ws`;
+    var websocket;
+    // Init web socket when the page loads
+    window.addEventListener('load', onload);
+
+    function onload(event) {
+        initWebSocket();
+    }
+
+    function getReadings(){
+        websocket.send("getReadings");
+    }
+
+    function initWebSocket() {
+        console.log('Tentando abrir conecção com o Web Socket');
+        websocket = new WebSocket(gateway);
+        websocket.onopen = onOpen;
+        websocket.onclose = onClose;
+        websocket.onmessage = onMessage;
+    }
+
+    // When websocket is established, call the getReadings() function
+    function onOpen(event) {
+        console.log('Connection opened');
+        getReadings();
+    }
+
+    function onClose(event) {
+        console.log('Connection closed');
+        setTimeout(initWebSocket, 2000);
+    }
+
+    // Function that receives the message from the ESP32 with the readings
+    function onMessage(event) {
+        console.log(event.data);
+        var myObj = JSON.parse(event.data);
+        var keys = Object.keys(myObj);
+
+        /*for (var i = 0; i < keys.length; i++){
+            var key = keys[i];
+            document.getElementById(key).innerHTML = myObj[key];
+        }*/
+    }
 </script>
 </html>
 )rawliteral";
@@ -379,18 +423,20 @@ void configureIOPin(){
 }
 
 void acionaBuzzer(){
-  for (int i = 00; i <= 10; i += 1) {
-    tone(PIN_BUZZER, 1000);
-    delay(300);
-    tone(PIN_BUZZER, 500);
-    delay(300);
-  }
+  tone(PIN_BUZZER, 1000);
+  delay(300);
+  tone(PIN_BUZZER, 500);
+  delay(200);
+}
+
+void notifyClients(String sensorReadings) {
+  ws.textAll(sensorReadings);
 }
 
 String getSensorReadings(){
-  int sinal = digitalRead(PIN_SENSOR);
+  int sinalPresenca = digitalRead(PIN_SENSOR);
   bool leituraFogo = digitalRead(PIN_FOGO);
-  if(sinal == HIGH){
+  if(sinalPresenca == HIGH){
     acionaBuzzer();
   }
   else if(leituraFogo==HIGH){
@@ -401,31 +447,71 @@ String getSensorReadings(){
     // Desativa o buzzer
     noTone(PIN_BUZZER);
   }
-  readings["temperature"] = String(sinal);
-  readings["humidity"] =  String(leituraFogo);
-  readings["pressure"] = String(bme.readPressure()/100.0F);
+  readings["sinalPresenca"] = String(sinalPresenca);
+  readings["leituraFogo"] =  String(leituraFogo);
   String jsonString = JSON.stringify(readings);
   return jsonString;
 }
 
+void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
+  AwsFrameInfo *info = (AwsFrameInfo*)arg;
+  if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
+    data[len] = 0;
+    String message = (char*)data;
+    //Check if the message is "getReadings"
+    if (strcmp((char*)data, "getReadings") == 0) {
+      // if it is, send current sensor readings
+      String sensorReadings = getSensorReadings();
+      Serial.print(sensorReadings);
+      notifyClients(sensorReadings);
+    }
+  }
+}
+
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  switch (type) {
+    case WS_EVT_CONNECT:
+      Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+      break;
+    case WS_EVT_DISCONNECT:
+      Serial.printf("WebSocket client #%u disconnected\n", client->id());
+      break;
+    case WS_EVT_DATA:
+      handleWebSocketMessage(arg, data, len);
+      break;
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+      break;
+  }
+}
+
+
+void configurarWifi(){
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  }
+  Serial.print("IP para conectar: ");
+  Serial.println(WiFi.localIP());
+}
+
+void initWebSocket() {
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+}
 
 void setup() {
+  initWebSocket();
   removeLineInfo(index_html);
+  // Corrigir linhas extras adicionadas ao html
   ledcSetup(1, 2, 3);
   // Para corrigir um bug
   configureIOPin();
 
   Serial.begin(9600);
 
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
-  }
-
-  // Print ESP32 Local IP Address
-  Serial.print("IP para conectar: ");
-  Serial.println(WiFi.localIP());
+  configurarWifi();
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", index_html);
@@ -435,5 +521,22 @@ void setup() {
 }
 
 void loop() {
-  
+  String ultimoResultado = " ";
+  while (1){
+    if ((millis() - lastTime) > timerDelay) {
+      String sensorReadings = getSensorReadings();
+      if (ultimoResultado == " "){
+        Serial.println(sensorReadings);
+        Serial.println("Primeira execucao");
+        ultimoResultado = sensorReadings;
+      }
+      if (ultimoResultado != sensorReadings){
+        ultimoResultado = sensorReadings;
+        Serial.println(sensorReadings);
+        notifyClients(sensorReadings);
+      }
+      lastTime = millis();
+      Serial.println("LENDO");
+    }
+  }
 }
