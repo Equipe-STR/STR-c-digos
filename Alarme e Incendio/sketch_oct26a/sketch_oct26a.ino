@@ -481,8 +481,19 @@ void notifyClients(String sensorReadings) {
 }
 
 String getSensorReadings(){
-  int sinalPresenca = digitalRead(PIN_SENSOR);
-  bool leituraFogo = digitalRead(PIN_FOGO);
+  int sinalPresenca;
+  bool leituraFogo;
+  if (ativacaoAlarme){
+    sinalPresenca = digitalRead(PIN_SENSOR);
+  }
+  else{
+    sinalPresenca = 0;
+  }
+  if (ativacaoIncendio){
+    leituraFogo = digitalRead(PIN_FOGO);
+  }else{
+    leituraFogo = LOW;
+  }
   if(sinalPresenca == HIGH){
     acionaBuzzer();
   }
