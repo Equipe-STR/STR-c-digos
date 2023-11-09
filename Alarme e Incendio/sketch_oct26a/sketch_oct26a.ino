@@ -3,7 +3,7 @@
 #include <AsyncTCP.h>
 #include <Arduino_JSON.h>
 
-#define PIN_SENSOR 14
+#define PIN_PRESENCA 14
 #define PIN_BUZZER 17
 #define PIN_FOGO 26
 
@@ -469,7 +469,7 @@ void removeLineInfo(char *input) {
 
 void configureIOPin(){
   pinMode(PIN_BUZZER, OUTPUT);
-  pinMode(PIN_SENSOR, INPUT);
+  pinMode(PIN_PRESENCA, INPUT);
   pinMode(PIN_FOGO, INPUT);
 }
 
@@ -484,37 +484,43 @@ void notifyClients(String sensorReadings) {
   ws.textAll(sensorReadings);
 }
 
-String getSensorReadings(){
+void getSensorPresenca(){
   int sinalPresenca;
-  bool leituraFogo;
   if (ativacaoAlarme){
-    sinalPresenca = digitalRead(PIN_SENSOR);
+    sinalPresenca = digitalRead(PIN_PRESENCA);
   }
   else{
     sinalPresenca = 0;
   }
+  String valorFogo = ((const char*) (readings["leituraFogo"]));
+  if(sinalPresenca == HIGH){
+    acionaBuzzer();
+  }
+  //LOW: Nada detectado
+  else if (valorFogo=="0"){
+    // Desativa o buzzer
+    noTone(PIN_BUZZER);
+  }
+  readings["sinalPresenca"] = String(sinalPresenca);
+  readings["ativacaoAlarme"] = String(ativacaoAlarme);  
+}
+
+void getSensorFogo(){
+  bool leituraFogo;
   if (ativacaoIncendio){
     leituraFogo = digitalRead(PIN_FOGO);
   }else{
     leituraFogo = LOW;
   }
-  if(sinalPresenca == HIGH){
+  String valorPresenca = ((const char*) (readings["sinalPresenca"]));
+  if(leituraFogo==HIGH){
     acionaBuzzer();
   }
-  else if(leituraFogo==HIGH){
-    acionaBuzzer();
-  }
-  //LOW: Nada detectado
-  else{
-    // Desativa o buzzer
+  else if (valorPresenca=="0"){
     noTone(PIN_BUZZER);
   }
-  readings["sinalPresenca"] = String(sinalPresenca);
   readings["leituraFogo"] =  String(leituraFogo);
-  readings["ativacaoAlarme"] = String(ativacaoAlarme);
   readings["ativacaoIncendio"] = String(ativacaoIncendio);
-  String jsonString = JSON.stringify(readings);
-  return jsonString;
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
@@ -525,7 +531,9 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     //Check if the message is "getReadings"
     if (strcmp((char*)data, "getReadings") == 0) {
       // if it is, send current sensor readings
-      String sensorReadings = getSensorReadings();
+      getSensorFogo();
+      getSensorPresenca();
+      String sensorReadings = JSON.stringify(readings);
       Serial.print(sensorReadings);
       notifyClients(sensorReadings);
     }
@@ -604,6 +612,7 @@ void setup() {
   configurarWifi();
 
   configurarRotas();
+
   server.begin();
 }
 
@@ -611,7 +620,9 @@ void loop() {
   String ultimoResultado = " ";
   while (1){
     if ((millis() - lastTime) > timerDelay) {
-      String sensorReadings = getSensorReadings();
+      getSensorFogo();
+      getSensorPresenca();
+      String sensorReadings = JSON.stringify(readings);
       if (ultimoResultado == " "){
         Serial.println(sensorReadings);
         Serial.println("Primeira execucao");
