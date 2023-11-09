@@ -504,7 +504,10 @@ void getSensorPresenca(){
     noTone(PIN_BUZZER);
   }
   readings["sinalPresenca"] = String(sinalPresenca);
-  readings["ativacaoAlarme"] = String(ativacaoAlarme);  
+  readings["ativacaoAlarme"] = String(ativacaoAlarme); 
+  Serial.println("Lido Presenca");
+  delay(100);
+  vTaskDelay(100);
 }
 
 void getSensorFogo(){
@@ -523,6 +526,9 @@ void getSensorFogo(){
   }
   readings["leituraFogo"] =  String(leituraFogo);
   readings["ativacaoIncendio"] = String(ativacaoIncendio);
+  Serial.println("Lido Fogo");
+  delay(100);
+  vTaskDelay(100);
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
@@ -602,7 +608,7 @@ void configurarRotas(){
 }
 
 
-void enviarDados(){
+void enviarDados( void *pvParameters ){
   String sensorReadings = JSON.stringify(readings);
   if (ultimoResultado == " "){
     Serial.println(sensorReadings);
@@ -614,7 +620,41 @@ void enviarDados(){
     Serial.println(sensorReadings);
     notifyClients(sensorReadings);
   }
-  lastTime = millis();
+  delay(100);
+  vTaskDelay(100);
+}
+
+void taskGetSensorPresenca( void *pvParameters ){
+  getSensorPresenca();
+}
+
+void taskGetSensorFogo( void *pvParameters ){
+  getSensorFogo();
+}
+
+void criarTarefas(){
+  xTaskCreate(
+    taskGetSensorPresenca
+    ,  "Leitura presenca" // A name just for humans
+    ,  32768  // Stack size
+    ,  NULL //Parameters for the task
+    ,  1  // Priority
+    ,  NULL); //Task Handle
+
+  xTaskCreate(
+    taskGetSensorFogo
+    ,  "Leitura fogo" // A name just for humans
+    ,  32768  // Stack size
+    ,  NULL //Parameters for the task
+    ,  1  // Priority
+    ,  NULL);
+  xTaskCreate(
+    enviarDados
+    ,  "Enviar dados" // A name just for humans
+    ,  32768  // Stack size
+    ,  NULL //Parameters for the task
+    ,  2  // Priority
+    ,  NULL); //Task Handle
 }
 
 void setup() {
@@ -632,14 +672,12 @@ void setup() {
   configurarRotas();
 
   server.begin();
+  
+  criarTarefas();
 }
 
 void loop() {
-  while (1){
-    if ((millis() - lastTime) > timerDelay) {
-      getSensorFogo();
-      getSensorPresenca();
-      enviarDados();
-    }
-  }
+  vTaskDelay(portMAX_DELAY);
+  //OR
+  vTaskDelete(NULL);
 }
