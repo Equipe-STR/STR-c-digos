@@ -20,6 +20,8 @@ int ativacaoIncendio = 1;
 unsigned long lastTime = 0;
 unsigned long timerDelay = 500;
 
+String ultimoResultado = " ";
+
 char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
@@ -599,6 +601,22 @@ void configurarRotas(){
   });
 }
 
+
+void enviarDados(){
+  String sensorReadings = JSON.stringify(readings);
+  if (ultimoResultado == " "){
+    Serial.println(sensorReadings);
+    Serial.println("Primeira execucao");
+    ultimoResultado = sensorReadings;
+  }
+  if (ultimoResultado != sensorReadings){
+    ultimoResultado = sensorReadings;
+    Serial.println(sensorReadings);
+    notifyClients(sensorReadings);
+  }
+  lastTime = millis();
+}
+
 void setup() {
   initWebSocket();
   removeLineInfo(index_html);
@@ -617,24 +635,11 @@ void setup() {
 }
 
 void loop() {
-  String ultimoResultado = " ";
   while (1){
     if ((millis() - lastTime) > timerDelay) {
       getSensorFogo();
       getSensorPresenca();
-      String sensorReadings = JSON.stringify(readings);
-      if (ultimoResultado == " "){
-        Serial.println(sensorReadings);
-        Serial.println("Primeira execucao");
-        ultimoResultado = sensorReadings;
-      }
-      if (ultimoResultado != sensorReadings){
-        ultimoResultado = sensorReadings;
-        Serial.println(sensorReadings);
-        notifyClients(sensorReadings);
-      }
-      lastTime = millis();
-      Serial.println("LENDO");
+      enviarDados();
     }
   }
 }
