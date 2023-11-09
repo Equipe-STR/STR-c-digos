@@ -7,8 +7,8 @@
 #define PIN_BUZZER 17
 #define PIN_FOGO 26
 
-const char* ssid = "wifi_inacio.";
-const char* password = "zenilda11";
+const char* ssid = "STR inacio";
+const char* password = "str12345";
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -554,7 +554,7 @@ void configurarWifi(){
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Connecting to WiFi..");
+    Serial.println("Conectando ao Wifi....");
   }
   Serial.print("IP para conectar: ");
   Serial.println(WiFi.localIP());
@@ -565,18 +565,7 @@ void initWebSocket() {
   server.addHandler(&ws);
 }
 
-void setup() {
-  initWebSocket();
-  removeLineInfo(index_html);
-  // Corrigir linhas extras adicionadas ao html
-  ledcSetup(1, 2, 3);
-  // Para corrigir um bug
-  configureIOPin();
-
-  Serial.begin(9600);
-
-  configurarWifi();
-
+void configurarRotas(){
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", index_html);
   });
@@ -600,6 +589,21 @@ void setup() {
     ativacaoIncendio = true;
     request->send_P(200, "text/html", "Ativado com sucesso");
   });
+}
+
+void setup() {
+  initWebSocket();
+  removeLineInfo(index_html);
+  // Corrigir linhas extras adicionadas ao html
+  ledcSetup(1, 2, 3);
+  // Para corrigir um bug
+  configureIOPin();
+
+  Serial.begin(9600);
+
+  configurarWifi();
+
+  configurarRotas();
   server.begin();
 }
 
