@@ -504,10 +504,7 @@ void getSensorPresenca(){
     noTone(PIN_BUZZER);
   }
   readings["sinalPresenca"] = String(sinalPresenca);
-  readings["ativacaoAlarme"] = String(ativacaoAlarme); 
-  Serial.println("Lido Presenca");
-  delay(100);
-  vTaskDelay(100);
+  readings["ativacaoAlarme"] = String(ativacaoAlarme);  
 }
 
 void getSensorFogo(){
@@ -526,9 +523,6 @@ void getSensorFogo(){
   }
   readings["leituraFogo"] =  String(leituraFogo);
   readings["ativacaoIncendio"] = String(ativacaoIncendio);
-  Serial.println("Lido Fogo");
-  delay(100);
-  vTaskDelay(100);
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
@@ -608,7 +602,7 @@ void configurarRotas(){
 }
 
 
-void enviarDados( void *pvParameters ){
+void enviarDados(){
   String sensorReadings = JSON.stringify(readings);
   if (ultimoResultado == " "){
     Serial.println(sensorReadings);
@@ -620,41 +614,40 @@ void enviarDados( void *pvParameters ){
     Serial.println(sensorReadings);
     notifyClients(sensorReadings);
   }
-  delay(100);
-  vTaskDelay(100);
+  lastTime = millis();
 }
 
 void taskGetSensorPresenca( void *pvParameters ){
-  getSensorPresenca();
+  while (1){
+    getSensorPresenca();
+    vTaskDelay(100);
+  }
 }
 
 void taskGetSensorFogo( void *pvParameters ){
-  getSensorFogo();
+  while (1){
+    getSensorFogo();
+    vTaskDelay(100);
+  }
 }
 
 void criarTarefas(){
-  xTaskCreate(
+  xTaskCreatePinnedToCore(
     taskGetSensorPresenca
     ,  "Leitura presenca" // A name just for humans
-    ,  32768  // Stack size
+    ,  1024  // Stack size
     ,  NULL //Parameters for the task
     ,  1  // Priority
-    ,  NULL); //Task Handle
-
-  xTaskCreate(
-    taskGetSensorFogo
-    ,  "Leitura fogo" // A name just for humans
-    ,  32768  // Stack size
-    ,  NULL //Parameters for the task
-    ,  1  // Priority
-    ,  NULL);
-  xTaskCreate(
-    enviarDados
-    ,  "Enviar dados" // A name just for humans
-    ,  32768  // Stack size
-    ,  NULL //Parameters for the task
-    ,  2  // Priority
-    ,  NULL); //Task Handle
+    ,  NULL
+    , 0); //Task Handle
+    xTaskCreatePinnedToCore(
+      taskGetSensorFogo
+      ,  "Leitura fogo" // A name just for humans
+      ,  1024  // Stack size
+      ,  NULL //Parameters for the task
+      ,  1  // Priority
+      ,  NULL
+      , 0); //Task Handle
 }
 
 void setup() {
@@ -672,12 +665,14 @@ void setup() {
   configurarRotas();
 
   server.begin();
-  
+
   criarTarefas();
 }
 
 void loop() {
-  vTaskDelay(portMAX_DELAY);
-  //OR
-  vTaskDelete(NULL);
+  while (1){
+    if ((millis() - lastTime) > timerDelay) {
+      enviarDados();
+    }
+  }
 }
