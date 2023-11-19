@@ -439,7 +439,7 @@
             
                     </div>
                     <div style="display: flex; flex-direction: column;">
-                        <div style="width: 100%; display: flex; justify-content: space-around;">
+                        <div id="status-baterias" style="width: 100%; display: flex; justify-content: space-around;">
                             <h2 class="situacao" style="margin: 10px ;">Bateria Primária</h2>
                             <h2 class="situacao" style="margin: 10px ;">Bateria Secundária</h2>
                         </div>
@@ -667,6 +667,35 @@
     </div>
 </body>
 <Script>
+
+    const primariaAtivada =document.querySelector('#primaria-ativada');
+    const primariaDesativada = document.querySelector('#primaria-desativada');
+    const secundariaAtivada = document.querySelector('#secundaria-ativada');
+    const secundariaDesativada = document.querySelector('#secundaria-desativada');
+    const statusBaterias = document.querySelector('#status-baterias').children;
+    console.log(statusBaterias);
+    function alternarBaterias () {
+        if(primariaDesativada.style.display == "none"){
+
+        primariaAtivada.style.display = "none";
+        primariaDesativada.style.display = "block";
+        secundariaDesativada.style.display = "none";
+        secundariaAtivada.style.display = "block";
+
+        statusBaterias[1].style.color = "green";
+        statusBaterias[0].style.color = "black";
+        }
+        else{
+            secundariaAtivada.style.display = "none";
+            secundariaDesativada.style.display = "block";
+            primariaDesativada.style.display = "none";
+            primariaAtivada.style.display = "block";
+
+            statusBaterias[0].style.color = "green";
+            statusBaterias[1].style.color = "black";
+        }
+    }
+
     const botaoIncedio = document.querySelector("#incendio-button");
     botaoIncedio.addEventListener("click", function (e){
         const botaoIncedio = document.querySelector("#incendio-button");
@@ -728,38 +757,38 @@
         data.innerHTML =  now.toLocaleDateString();
     }
     
-    var gateway = `ws://${window.location.hostname}/ws`;
-    var websocket;
-    // Init web socket when the page loads
-    window.addEventListener('load', onload);
-    var alarme = false;
-    var incendio = false;
-    function onload(event) {
-        initWebSocket();
-    }
+    // var gateway = `ws://${window.location.hostname}/ws`;
+    // var websocket;
+    // // Init web socket when the page loads
+    // window.addEventListener('load', onload);
+    // var alarme = false;
+    // var incendio = false;
+    // function onload(event) {
+    //     initWebSocket();
+    // }
 
-    function getReadings(){
-        websocket.send("getReadings");
-    }
+    // function getReadings(){
+    //     websocket.send("getReadings");
+    // }
 
-    function initWebSocket() {
-        console.log('Tentando abrir conecção com o Web Socket');
-        websocket = new WebSocket(gateway);
-        websocket.onopen = onOpen;
-        websocket.onclose = onClose;
-        websocket.onmessage = onMessage;
-    }
+    // function initWebSocket() {
+    //     console.log('Tentando abrir conecção com o Web Socket');
+    //     websocket = new WebSocket(gateway);
+    //     websocket.onopen = onOpen;
+    //     websocket.onclose = onClose;
+    //     websocket.onmessage = onMessage;
+    // }
 
-    When websocket is established, call the getReadings() function
-    function onOpen(event) {
-        console.log('Connection opened');
-        getReadings();
-    }
+    // When websocket is established, call the getReadings() function
+    // function onOpen(event) {
+    //     console.log('Connection opened');
+    //     getReadings();
+    // }
 
-    function onClose(event) {
-        console.log('Connection closed');
-        setTimeout(initWebSocket, 2000);
-    }
+    // function onClose(event) {
+    //     console.log('Connection closed');
+    //     setTimeout(initWebSocket, 2000);
+    // }
 
     function ativarAlarme(){
         addCard("Alarme iniciado")
