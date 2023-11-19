@@ -668,12 +668,23 @@
 </body>
 <Script>
 
+    var botaoLimparHis = document.querySelector("#limpar-historico")
+    botaoLimparHis.addEventListener('click', function(e){
+        var table = document.querySelector('#historico')
+        var tam = ((table.rows.length)-1)
+        e.preventDefault();
+
+        while (tam > 0) {
+            table.deleteRow(tam);
+            tam--;
+        }
+    })
+
     const primariaAtivada =document.querySelector('#primaria-ativada');
     const primariaDesativada = document.querySelector('#primaria-desativada');
     const secundariaAtivada = document.querySelector('#secundaria-ativada');
     const secundariaDesativada = document.querySelector('#secundaria-desativada');
     const statusBaterias = document.querySelector('#status-baterias').children;
-    console.log(statusBaterias);
     function alternarBaterias () {
         if(primariaDesativada.style.display == "none"){
 
