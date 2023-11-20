@@ -667,7 +667,8 @@
     </div>
 </body>
 <Script>
-
+    function n(){}
+    
     var botaoLimparHis = document.querySelector("#limpar-historico")
     botaoLimparHis.addEventListener('click', function(e){
         var table = document.querySelector('#historico')
@@ -679,15 +680,26 @@
             tam--;
         }
     })
+    
 
     const primariaAtivada =document.querySelector('#primaria-ativada');
     const primariaDesativada = document.querySelector('#primaria-desativada');
     const secundariaAtivada = document.querySelector('#secundaria-ativada');
     const secundariaDesativada = document.querySelector('#secundaria-desativada');
     const statusBaterias = document.querySelector('#status-baterias').children;
-    function alternarBaterias () {
-        if(primariaDesativada.style.display == "none"){
+    statusBaterias[0].style.color = "green";
+    statusBaterias[1].style.color = "black";
+    function alternarBateriaPrimaria() {
+        secundariaAtivada.style.display = "none";
+        secundariaDesativada.style.display = "block";
+        primariaDesativada.style.display = "none";
+        primariaAtivada.style.display = "block";
 
+        statusBaterias[0].style.color = "green";
+        statusBaterias[1].style.color = "black";
+    }
+
+    function alternarBateriaSecundaria(){
         primariaAtivada.style.display = "none";
         primariaDesativada.style.display = "block";
         secundariaDesativada.style.display = "none";
@@ -695,16 +707,6 @@
 
         statusBaterias[1].style.color = "green";
         statusBaterias[0].style.color = "black";
-        }
-        else{
-            secundariaAtivada.style.display = "none";
-            secundariaDesativada.style.display = "block";
-            primariaDesativada.style.display = "none";
-            primariaAtivada.style.display = "block";
-
-            statusBaterias[0].style.color = "green";
-            statusBaterias[1].style.color = "black";
-        }
     }
 
     const botaoIncedio = document.querySelector("#incendio-button");
@@ -737,8 +739,6 @@
             xhttp.send()
         }
      })
-
-    function n(){}
     function clickHome(e) {
         e.preventDefault();
         document.getElementById("home").style.display = "block";
