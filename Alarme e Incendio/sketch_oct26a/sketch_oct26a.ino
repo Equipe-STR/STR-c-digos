@@ -6,6 +6,7 @@
 #define PIN_PRESENCA 14
 #define PIN_BUZZER 17
 #define PIN_FOGO 26
+#define PIN_PRESENCA 1
 
 const char* ssid = "STR inacio";
 const char* password = "str12345";
@@ -525,6 +526,12 @@ void getSensorFogo(){
   readings["ativacaoIncendio"] = String(ativacaoIncendio);
 }
 
+void getFonteUsada(){
+  bool leituraFonte;
+  leituraFonte = digitalRead(PIN_FOGO);
+  readings["FonteUsada"] =  String(leituraFonte);
+}
+
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
@@ -631,6 +638,13 @@ void taskGetSensorFogo( void *pvParameters ){
   }
 }
 
+void taskGetFonteUsada( void *pvParameters ){
+  while (1){
+    getFonteUsada();
+    vTaskDelay(100);
+  }
+}
+
 void criarTarefas(){
   xTaskCreatePinnedToCore(
     taskGetSensorPresenca
@@ -642,6 +656,14 @@ void criarTarefas(){
     , 0); //Task Handle
     xTaskCreatePinnedToCore(
       taskGetSensorFogo
+      ,  "Leitura fogo" // A name just for humans
+      ,  1024  // Stack size
+      ,  NULL //Parameters for the task
+      ,  1  // Priority
+      ,  NULL
+      , 0); //Task Handle
+    xTaskCreatePinnedToCore(
+      taskGetFonteUsada
       ,  "Leitura fogo" // A name just for humans
       ,  1024  // Stack size
       ,  NULL //Parameters for the task

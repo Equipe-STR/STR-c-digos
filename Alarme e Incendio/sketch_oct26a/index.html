@@ -768,38 +768,38 @@
         data.innerHTML =  now.toLocaleDateString();
     }
     
-    // var gateway = `ws://${window.location.hostname}/ws`;
-    // var websocket;
-    // // Init web socket when the page loads
-    // window.addEventListener('load', onload);
-    // var alarme = false;
-    // var incendio = false;
-    // function onload(event) {
-    //     initWebSocket();
-    // }
+    var gateway = `ws://${window.location.hostname}/ws`;
+    var websocket;
+    // Init web socket when the page loads
+    window.addEventListener('load', onload);
+    var alarme = false;
+    var incendio = false;
+    function onload(event) {
+        initWebSocket();
+    }
 
     // function getReadings(){
     //     websocket.send("getReadings");
     // }
 
-    // function initWebSocket() {
-    //     console.log('Tentando abrir conecção com o Web Socket');
-    //     websocket = new WebSocket(gateway);
-    //     websocket.onopen = onOpen;
-    //     websocket.onclose = onClose;
-    //     websocket.onmessage = onMessage;
-    // }
+    function initWebSocket() {
+        console.log('Tentando abrir conecção com o Web Socket');
+        websocket = new WebSocket(gateway);
+        websocket.onopen = onOpen;
+        websocket.onclose = onClose;
+        websocket.onmessage = onMessage;
+    }
 
-    // When websocket is established, call the getReadings() function
-    // function onOpen(event) {
-    //     console.log('Connection opened');
-    //     getReadings();
-    // }
+    //When websocket is established, call the getReadings() function
+    function onOpen(event) {
+        console.log('Connection opened');
+        getReadings();
+    }
 
-    // function onClose(event) {
-    //     console.log('Connection closed');
-    //     setTimeout(initWebSocket, 2000);
-    // }
+    function onClose(event) {
+        console.log('Connection closed');
+        setTimeout(initWebSocket, 2000);
+    }
 
     function ativarAlarme(){
         addCard("Alarme iniciado")
@@ -868,6 +868,12 @@
             const botaoIncendio = document.querySelector("#incendio-button");
             botaoIncendio.innerHTML = "LIGADO";
             botaoIncendio.style.backgroundColor = "#000dfdf2";
+        }
+        if(myObj["FonteUsada"]=="1"){
+            alternarBateriaPrimaria();
+        }
+        if(myObj["FonteUsada"]=="0"){
+            alternarBateriaSecundaria();
         }
     }
 </script>
