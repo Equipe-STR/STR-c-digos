@@ -1028,21 +1028,21 @@ void enviarDados(){
 void taskGetSensorPresenca( void *pvParameters ){
   while (1){
     getSensorPresenca();
-    vTaskDelay(100);
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
 void taskGetSensorFogo( void *pvParameters ){
   while (1){
     getSensorFogo();
-    vTaskDelay(100);
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
 void taskGetFonteUsada( void *pvParameters ){
   while (1){
     getFonteUsada();
-    vTaskDelay(100);
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
